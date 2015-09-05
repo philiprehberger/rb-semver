@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name = 'philiprehberger-semver'
   spec.version = Philiprehberger::Semver::VERSION
   spec.authors = ['Philip Rehberger']
-  spec.email = ['philip@rehberger.dev']
+  spec.email = ['me@philiprehberger.com']
 
   spec.summary = 'SemVer 2.0.0 parsing, comparison, range matching, and bump operations'
   spec.description = 'A lightweight Ruby library for parsing, comparing, sorting, ' \
@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
     'homepage_uri' => spec.homepage,
     'source_code_uri' => spec.homepage,
     'changelog_uri' => "#{spec.homepage}/blob/main/CHANGELOG.md",
+    'bug_tracker_uri' => "#{spec.homepage}/issues",
     'rubygems_mfa_required' => 'true'
   }
 

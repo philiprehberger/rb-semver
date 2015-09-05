@@ -95,9 +95,10 @@ Philiprehberger::Semver.satisfies?('1.9.0', '^ 1.0.0')             # => true
 
 ```bash
 bundle install
-bundle exec rspec
+bundle exec rspec      # Run tests
+bundle exec rubocop    # Check code style
 ```
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT
