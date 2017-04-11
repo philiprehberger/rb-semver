@@ -116,5 +116,133 @@ RSpec.describe Philiprehberger::Semver do
       expect(described_class.satisfies?('1.9.0', '^ 1.0.0')).to be true
       expect(described_class.satisfies?('2.0.0', '^ 1.0.0')).to be false
     end
+
+    it 'matches exact version constraint' do
+      expect(described_class.satisfies?('1.2.3', '1.2.3')).to be true
+      expect(described_class.satisfies?('1.2.4', '1.2.3')).to be false
+    end
+
+    it 'matches <= constraint' do
+      expect(described_class.satisfies?('1.0.0', '<= 1.0.0')).to be true
+      expect(described_class.satisfies?('1.0.1', '<= 1.0.0')).to be false
+    end
+
+    it 'matches > constraint' do
+      expect(described_class.satisfies?('1.0.1', '> 1.0.0')).to be true
+      expect(described_class.satisfies?('1.0.0', '> 1.0.0')).to be false
+    end
+  end
+
+  describe 'pre-release comparison ordering' do
+    it 'orders alpha < beta < rc' do
+      alpha = described_class.parse('1.0.0-alpha')
+      beta = described_class.parse('1.0.0-beta')
+      rc = described_class.parse('1.0.0-rc')
+      expect(alpha).to be < beta
+      expect(beta).to be < rc
+    end
+
+    it 'orders numeric pre-release identifiers by value' do
+      expect(described_class.parse('1.0.0-1')).to be < described_class.parse('1.0.0-10')
+    end
+
+    it 'ranks numeric identifiers lower than string identifiers' do
+      expect(described_class.parse('1.0.0-1')).to be < described_class.parse('1.0.0-alpha')
+    end
+
+    it 'compares multi-segment pre-release identifiers' do
+      expect(described_class.parse('1.0.0-alpha.1')).to be < described_class.parse('1.0.0-alpha.2')
+    end
+
+    it 'ranks shorter pre-release lower when prefix matches' do
+      expect(described_class.parse('1.0.0-alpha')).to be < described_class.parse('1.0.0-alpha.1')
+    end
+  end
+
+  describe 'build metadata in comparison' do
+    it 'ignores build metadata when comparing equal versions' do
+      a = described_class.parse('1.0.0+build.1')
+      b = described_class.parse('1.0.0+build.999')
+      expect(a == b).to be true
+    end
+
+    it 'ignores build metadata when sorting' do
+      a = described_class.parse('1.0.0+aaa')
+      b = described_class.parse('1.0.0+zzz')
+      expect(a <=> b).to eq(0)
+    end
+  end
+
+  describe 'parse invalid strings' do
+    it 'raises on leading zeros in major' do
+      expect { described_class.parse('01.0.0') }.to raise_error(Philiprehberger::Semver::Error)
+    end
+
+    it 'raises on missing patch' do
+      expect { described_class.parse('1.0') }.to raise_error(Philiprehberger::Semver::Error)
+    end
+
+    it 'raises on empty string' do
+      expect { described_class.parse('') }.to raise_error(Philiprehberger::Semver::Error)
+    end
+
+    it 'raises on nil input' do
+      expect { described_class.parse(nil) }.to raise_error(Philiprehberger::Semver::Error)
+    end
+  end
+
+  describe 'to_s roundtrip' do
+    it 'roundtrips a simple version' do
+      expect(described_class.parse('1.2.3').to_s).to eq('1.2.3')
+    end
+
+    it 'roundtrips a version with pre-release' do
+      expect(described_class.parse('1.0.0-alpha.1').to_s).to eq('1.0.0-alpha.1')
+    end
+
+    it 'roundtrips a version with build metadata' do
+      expect(described_class.parse('1.0.0+build.42').to_s).to eq('1.0.0+build.42')
+    end
+
+    it 'roundtrips a full version' do
+      input = '1.0.0-rc.1+build.123'
+      expect(described_class.parse(input).to_s).to eq(input)
+    end
+  end
+
+  describe 'bump from pre-release' do
+    it 'drops pre-release on patch bump' do
+      v = described_class.parse('1.0.0-alpha')
+      expect(v.bump(:patch).to_s).to eq('1.0.1')
+    end
+
+    it 'drops pre-release on minor bump' do
+      v = described_class.parse('1.0.0-alpha')
+      expect(v.bump(:minor).to_s).to eq('1.1.0')
+    end
+
+    it 'drops pre-release on major bump' do
+      v = described_class.parse('1.0.0-alpha')
+      expect(v.bump(:major).to_s).to eq('2.0.0')
+    end
+
+    it 'raises on unknown bump level' do
+      v = described_class.parse('1.0.0')
+      expect { v.bump(:unknown) }.to raise_error(Philiprehberger::Semver::Error)
+    end
+  end
+
+  describe 'sort stability' do
+    it 'sorts a complex list correctly' do
+      input = ['3.0.0', '1.0.0-alpha', '1.0.0-beta', '1.0.0', '2.1.0', '2.0.0']
+      expected = ['1.0.0-alpha', '1.0.0-beta', '1.0.0', '2.0.0', '2.1.0', '3.0.0']
+      expect(described_class.sort(input)).to eq(expected)
+    end
+
+    it 'sorts pre-release versions with numeric identifiers' do
+      input = ['1.0.0-rc.2', '1.0.0-rc.1', '1.0.0-rc.10']
+      expected = ['1.0.0-rc.1', '1.0.0-rc.2', '1.0.0-rc.10']
+      expect(described_class.sort(input)).to eq(expected)
+    end
   end
 end
