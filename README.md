@@ -27,7 +27,7 @@ gem install philiprehberger-semver
 ## Usage
 
 ```ruby
-require 'philiprehberger/semver'
+require "philiprehberger/semver"
 
 # Parse a version string
 version = Philiprehberger::Semver.parse('1.2.3-beta.1+build.123')
@@ -95,8 +95,8 @@ Philiprehberger::Semver.satisfies?('1.9.0', '^ 1.0.0')             # => true
 
 ```bash
 bundle install
-bundle exec rspec      # Run tests
-bundle exec rubocop    # Check code style
+bundle exec rspec
+bundle exec rubocop
 ```
 
 ## License
