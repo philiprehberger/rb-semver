@@ -31,29 +31,57 @@ require "philiprehberger/semver"
 
 # Parse a version string
 version = Philiprehberger::Semver.parse('1.2.3-beta.1+build.123')
-version.major        # => 1
-version.minor        # => 2
-version.patch        # => 3
-version.pre_release  # => 'beta.1'
+version.major          # => 1
+version.minor          # => 2
+version.patch          # => 3
+version.pre_release    # => 'beta.1'
 version.build_metadata # => 'build.123'
+version.to_s           # => '1.2.3-beta.1+build.123'
+```
 
-# Compare versions
-Philiprehberger::Semver.parse('2.0.0') > Philiprehberger::Semver.parse('1.9.9')  # => true
+### Comparison
+
+Versions implement `Comparable`, so all standard Ruby comparison operators work. Pre-release versions sort lower than their release counterpart, and pre-release identifiers are compared per SemVer 2.0.0 precedence rules.
+
+```ruby
+Philiprehberger::Semver.parse('2.0.0') > Philiprehberger::Semver.parse('1.9.9')   # => true
 Philiprehberger::Semver.parse('1.0.0-alpha') < Philiprehberger::Semver.parse('1.0.0')  # => true
+Philiprehberger::Semver.parse('1.0.0-alpha') < Philiprehberger::Semver.parse('1.0.0-beta')  # => true
+Philiprehberger::Semver.parse('1.0.0-alpha.1') < Philiprehberger::Semver.parse('1.0.0-alpha.2')  # => true
+```
 
-# Sort versions
-Philiprehberger::Semver.sort(['2.0.0', '1.0.0', '1.1.0'])  # => ['1.0.0', '1.1.0', '2.0.0']
+### Sorting
 
-# Bump versions
+Pass an array of version strings and get back a sorted array in ascending order.
+
+```ruby
+Philiprehberger::Semver.sort(['2.0.0', '1.0.0', '1.1.0'])
+# => ['1.0.0', '1.1.0', '2.0.0']
+
+Philiprehberger::Semver.sort(['1.0.0', '1.0.0-alpha', '1.0.0-beta'])
+# => ['1.0.0-alpha', '1.0.0-beta', '1.0.0']
+```
+
+### Bumping
+
+`bump` returns a new immutable `Version` with the specified level incremented. Minor and patch are reset to zero when a higher level is bumped.
+
+```ruby
 version = Philiprehberger::Semver.parse('1.2.3')
 version.bump(:major).to_s  # => '2.0.0'
 version.bump(:minor).to_s  # => '1.3.0'
 version.bump(:patch).to_s  # => '1.2.4'
+```
 
-# Range matching
+### Range Matching
+
+Check whether a version satisfies one or more comma-separated constraints. Supports standard comparison operators, pessimistic (`~>`), and caret (`^`) constraints.
+
+```ruby
 Philiprehberger::Semver.satisfies?('1.5.0', '>= 1.0.0, < 2.0.0')  # => true
 Philiprehberger::Semver.satisfies?('1.5.0', '~> 1.4')              # => true
 Philiprehberger::Semver.satisfies?('1.9.0', '^ 1.0.0')             # => true
+Philiprehberger::Semver.satisfies?('2.0.0', '>= 1.0.0, < 2.0.0')  # => false
 ```
 
 ## API
