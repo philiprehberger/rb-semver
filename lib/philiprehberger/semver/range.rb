@@ -45,7 +45,7 @@ module Philiprehberger
       end
       private_class_method :apply_operator
 
-      def self.pessimistic_check(version, target) # rubocop:disable Naming/PredicateMethod
+      def self.pessimistic_check(version, target)
         return false if version < target
 
         if target.patch.zero? && target.minor.positive?
@@ -56,7 +56,7 @@ module Philiprehberger
       end
       private_class_method :pessimistic_check
 
-      def self.compatible_check(version, target) # rubocop:disable Naming/PredicateMethod
+      def self.compatible_check(version, target)
         return false if version < target
 
         if target.major.zero?
