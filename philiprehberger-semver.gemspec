@@ -11,15 +11,15 @@ Gem::Specification.new do |spec|
   spec.summary = 'SemVer 2.0.0 parsing, comparison, range matching, and bump operations'
   spec.description = 'A lightweight Ruby library for parsing, comparing, sorting, ' \
                      'and matching semantic versions per the SemVer 2.0.0 specification.'
-  spec.homepage = 'https://github.com/philiprehberger/rb-semver'
+  spec.homepage      = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-semver'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1.0'
 
   spec.metadata = {
     'homepage_uri' => spec.homepage,
-    'source_code_uri' => spec.homepage,
-    'changelog_uri' => "#{spec.homepage}/blob/main/CHANGELOG.md",
-    'bug_tracker_uri' => "#{spec.homepage}/issues",
+    'source_code_uri' => 'https://github.com/philiprehberger/rb-semver',
+    'changelog_uri' => 'https://github.com/philiprehberger/rb-semver/blob/main/CHANGELOG.md',
+    'bug_tracker_uri' => 'https://github.com/philiprehberger/rb-semver/issues',
     'rubygems_mfa_required' => 'true'
   }
 
