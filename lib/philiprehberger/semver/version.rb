@@ -34,6 +34,18 @@ module Philiprehberger
         end
       end
 
+      def pre_release?
+        !@pre_release.nil?
+      end
+
+      def stable?
+        @pre_release.nil? && @major >= 1
+      end
+
+      def to_a
+        [@major, @minor, @patch]
+      end
+
       def to_s
         str = "#{major}.#{minor}.#{patch}"
         str = "#{str}-#{pre_release}" if pre_release

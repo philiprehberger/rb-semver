@@ -83,6 +83,57 @@ RSpec.describe Philiprehberger::Semver do
       end
     end
 
+    describe '#pre_release?' do
+      it 'returns true for pre-release versions' do
+        version = Philiprehberger::Semver.parse('1.0.0-alpha')
+        expect(version.pre_release?).to be true
+      end
+
+      it 'returns false for release versions' do
+        version = Philiprehberger::Semver.parse('1.0.0')
+        expect(version.pre_release?).to be false
+      end
+
+      it 'returns true for beta versions' do
+        version = Philiprehberger::Semver.parse('2.0.0-beta.1')
+        expect(version.pre_release?).to be true
+      end
+    end
+
+    describe '#stable?' do
+      it 'returns true for stable releases' do
+        version = Philiprehberger::Semver.parse('1.0.0')
+        expect(version.stable?).to be true
+      end
+
+      it 'returns false for pre-release versions' do
+        version = Philiprehberger::Semver.parse('1.0.0-rc.1')
+        expect(version.stable?).to be false
+      end
+
+      it 'returns false for 0.x versions' do
+        version = Philiprehberger::Semver.parse('0.9.0')
+        expect(version.stable?).to be false
+      end
+
+      it 'returns true for high major versions' do
+        version = Philiprehberger::Semver.parse('5.2.1')
+        expect(version.stable?).to be true
+      end
+    end
+
+    describe '#to_a' do
+      it 'returns array of major, minor, patch' do
+        version = Philiprehberger::Semver.parse('1.2.3')
+        expect(version.to_a).to eq([1, 2, 3])
+      end
+
+      it 'ignores pre-release and build metadata' do
+        version = Philiprehberger::Semver.parse('1.2.3-alpha+build')
+        expect(version.to_a).to eq([1, 2, 3])
+      end
+    end
+
     describe '#to_s' do
       it 'formats full version' do
         v = Philiprehberger::Semver.parse('1.0.0-beta.1+build.123')
