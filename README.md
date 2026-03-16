@@ -2,8 +2,13 @@
 
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-semver.svg)](https://rubygems.org/gems/philiprehberger-semver)
 [![CI](https://github.com/philiprehberger/rb-semver/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-semver/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/philiprehberger/rb-semver)](LICENSE)
 
 SemVer 2.0.0 parsing, comparison, range matching, and bump operations for Ruby.
+
+## Requirements
+
+- Ruby >= 3.1
 
 ## Installation
 
