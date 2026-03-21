@@ -15,7 +15,7 @@ SemVer 2.0.0 parsing, comparison, range matching, and bump operations for Ruby.
 Add to your Gemfile:
 
 ```ruby
-gem 'philiprehberger-semver'
+gem "philiprehberger-semver"
 ```
 
 Or install directly:
