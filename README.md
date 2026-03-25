@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-semver.svg)](https://rubygems.org/gems/philiprehberger-semver)
 [![License](https://img.shields.io/github/license/philiprehberger/rb-semver)](LICENSE)
 
-SemVer 2.0.0 parsing, comparison, range matching, and bump operations for Ruby.
+SemVer 2.0.0 parsing, comparison, range matching, and bump operations
 
 ## Requirements
 
