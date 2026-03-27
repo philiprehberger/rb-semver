@@ -3,6 +3,7 @@
 [![Tests](https://github.com/philiprehberger/rb-semver/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-semver/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-semver.svg)](https://rubygems.org/gems/philiprehberger-semver)
 [![License](https://img.shields.io/github/license/philiprehberger/rb-semver)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 SemVer 2.0.0 parsing, comparison, range matching, and bump operations
 
@@ -129,4 +130,4 @@ bundle exec rubocop
 
 ## License
 
-MIT
+[MIT](LICENSE)
