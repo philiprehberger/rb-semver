@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = 'SemVer 2.0.0 parsing, comparison, range matching, and bump operations'
   spec.description = 'A lightweight Ruby library for parsing, comparing, sorting, ' \
                      'and matching semantic versions per the SemVer 2.0.0 specification.'
-  spec.homepage      = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-semver'
+  spec.homepage = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-semver'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1.0'
 
