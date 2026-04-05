@@ -73,6 +73,20 @@ version.bump(:minor).to_s  # => '1.3.0'
 version.bump(:patch).to_s  # => '1.2.4'
 ```
 
+### Version Predicates
+
+```ruby
+require "philiprehberger/semver"
+
+version = Philiprehberger::Semver.parse("1.0.0-alpha")
+version.pre_release?  # => true
+version.stable?       # => false
+
+stable = Philiprehberger::Semver.parse("2.1.0")
+stable.stable?        # => true
+stable.to_a           # => [2, 1, 0]
+```
+
 ### Range Matching
 
 Check whether a version satisfies one or more comma-separated constraints. Supports standard comparison operators, pessimistic (`~>`), and caret (`^`) constraints.
@@ -104,6 +118,9 @@ Philiprehberger::Semver.satisfies?('2.0.0', '>= 1.0.0, < 2.0.0')  # => false
 | `#pre_release` | Pre-release identifier or `nil` |
 | `#build_metadata` | Build metadata or `nil` |
 | `#bump(level)` | Return a new `Version` bumped at `:major`, `:minor`, or `:patch` |
+| `#pre_release?` | `true` if the version has a pre-release segment |
+| `#stable?` | `true` if major >= 1 and no pre-release |
+| `#to_a` | Return `[major, minor, patch]` as an array |
 | `#to_s` | Format as a SemVer string |
 | `#<=>` | Compare two versions per SemVer 2.0.0 precedence rules |
 
