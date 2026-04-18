@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-17
+
+### Added
+- `Version#next_pre_release(label:)` iterates pre-release identifiers — promotes stable → pre-release, or bumps the trailing numeric token on an existing pre-release
+
 ## [0.2.0] - 2026-04-04
 
 ### Added
