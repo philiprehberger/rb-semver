@@ -34,6 +34,36 @@ module Philiprehberger
         end
       end
 
+      # Return a new {Version} with its pre-release identifier iterated.
+      #
+      # When +self+ is stable (no pre-release), the result is promoted to a
+      # pre-release using the given +label+ with a numeric suffix of +1+
+      # (e.g. +1.2.3+ with +label: 'alpha'+ becomes +1.2.3-alpha.1+).
+      #
+      # When +self+ is already a pre-release, the +label+ keyword is ignored
+      # and the existing pre-release string is iterated:
+      # - if the last dot-separated token is numeric, that token is
+      #   incremented (+alpha.1+ -> +alpha.2+, +rc.4+ -> +rc.5+)
+      # - otherwise +.1+ is appended (+rc+ -> +rc.1+,
+      #   +alpha.beta+ -> +alpha.beta.1+)
+      #
+      # +build_metadata+ is preserved on the returned {Version}. +self+ is
+      # not mutated.
+      #
+      # @param label [String] pre-release label to use when promoting a
+      #   stable version. Ignored when +self+ is already a pre-release.
+      # @return [Version] a new {Version} with the iterated pre-release
+      def next_pre_release(label: 'alpha')
+        new_pre_release =
+          if pre_release.nil?
+            "#{label}.1"
+          else
+            iterate_pre_release(pre_release)
+          end
+
+        self.class.new(major, minor, patch, pre_release: new_pre_release, build_metadata: build_metadata)
+      end
+
       def pre_release?
         !@pre_release.nil?
       end
@@ -86,6 +116,16 @@ module Philiprehberger
 
       def integer?(value)
         value.match?(/\A\d+\z/)
+      end
+
+      def iterate_pre_release(identifier)
+        tokens = identifier.split('.')
+        if integer?(tokens.last)
+          tokens[-1] = (tokens.last.to_i + 1).to_s
+          tokens.join('.')
+        else
+          "#{identifier}.1"
+        end
       end
     end
   end

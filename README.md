@@ -73,6 +73,19 @@ version.bump(:minor).to_s  # => '1.3.0'
 version.bump(:patch).to_s  # => '1.2.4'
 ```
 
+### Iterating pre-release identifiers
+
+`next_pre_release` returns a new immutable `Version` with its pre-release identifier iterated. A stable version is promoted to a pre-release using the given `label:` (default `'alpha'`). A version that already has a pre-release has its trailing numeric token incremented; if the last token is not numeric, `.1` is appended. The `label:` keyword is ignored when the version is already a pre-release. `build_metadata` is preserved.
+
+```ruby
+Philiprehberger::Semver.parse('1.2.3').next_pre_release.to_s               # => '1.2.3-alpha.1'
+Philiprehberger::Semver.parse('1.2.3').next_pre_release(label: 'beta').to_s # => '1.2.3-beta.1'
+Philiprehberger::Semver.parse('1.0.0-alpha.1').next_pre_release.to_s       # => '1.0.0-alpha.2'
+Philiprehberger::Semver.parse('1.0.0-rc.4').next_pre_release.to_s          # => '1.0.0-rc.5'
+Philiprehberger::Semver.parse('1.0.0-rc').next_pre_release.to_s            # => '1.0.0-rc.1'
+Philiprehberger::Semver.parse('1.0.0-alpha.beta').next_pre_release.to_s    # => '1.0.0-alpha.beta.1'
+```
+
 ### Version Predicates
 
 ```ruby
@@ -118,6 +131,7 @@ Philiprehberger::Semver.satisfies?('2.0.0', '>= 1.0.0, < 2.0.0')  # => false
 | `#pre_release` | Pre-release identifier or `nil` |
 | `#build_metadata` | Build metadata or `nil` |
 | `#bump(level)` | Return a new `Version` bumped at `:major`, `:minor`, or `:patch` |
+| `#next_pre_release(label:)` | Return a new `Version` with its pre-release iterated (promotes stable, or bumps trailing numeric token) |
 | `#pre_release?` | `true` if the version has a pre-release segment |
 | `#stable?` | `true` if major >= 1 and no pre-release |
 | `#to_a` | Return `[major, minor, patch]` as an array |
