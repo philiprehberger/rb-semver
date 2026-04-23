@@ -86,6 +86,16 @@ Philiprehberger::Semver.parse('1.0.0-rc').next_pre_release.to_s            # => 
 Philiprehberger::Semver.parse('1.0.0-alpha.beta').next_pre_release.to_s    # => '1.0.0-alpha.beta.1'
 ```
 
+### Pre-release identifiers
+
+`prerelease_identifiers` returns the dot-separated pre-release identifiers as an array of strings. Numeric identifiers stay as strings (per SemVer 2.0.0). Versions without a pre-release segment return an empty array.
+
+```ruby
+Philiprehberger::Semver.parse('1.2.3-beta.1').prerelease_identifiers    # => ["beta", "1"]
+Philiprehberger::Semver.parse('1.2.3').prerelease_identifiers           # => []
+Philiprehberger::Semver.parse('1.0.0-rc.1+build.42').prerelease_identifiers # => ["rc", "1"]
+```
+
 ### Version Predicates
 
 ```ruby
@@ -129,6 +139,7 @@ Philiprehberger::Semver.satisfies?('2.0.0', '>= 1.0.0, < 2.0.0')  # => false
 | `#minor` | Minor version number |
 | `#patch` | Patch version number |
 | `#pre_release` | Pre-release identifier or `nil` |
+| `#prerelease_identifiers` | Dot-separated pre-release identifiers as `Array<String>`, or `[]` if none |
 | `#build_metadata` | Build metadata or `nil` |
 | `#bump(level)` | Return a new `Version` bumped at `:major`, `:minor`, or `:patch` |
 | `#next_pre_release(label:)` | Return a new `Version` with its pre-release iterated (promotes stable, or bumps trailing numeric token) |

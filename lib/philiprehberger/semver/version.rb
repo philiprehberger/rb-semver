@@ -2,11 +2,33 @@
 
 module Philiprehberger
   module Semver
+    # Immutable SemVer 2.0.0 version value object.
+    #
+    # Includes +Comparable+, so standard Ruby comparison operators work per
+    # SemVer 2.0.0 precedence rules.
     class Version
       include Comparable
 
-      attr_reader :major, :minor, :patch, :pre_release, :build_metadata
+      # @return [Integer] the major version number
+      attr_reader :major
 
+      # @return [Integer] the minor version number
+      attr_reader :minor
+
+      # @return [Integer] the patch version number
+      attr_reader :patch
+
+      # @return [String, nil] the pre-release identifier string, or +nil+
+      attr_reader :pre_release
+
+      # @return [String, nil] the build metadata string, or +nil+
+      attr_reader :build_metadata
+
+      # @param major [Integer, String] major version
+      # @param minor [Integer, String] minor version
+      # @param patch [Integer, String] patch version
+      # @param pre_release [String, nil] pre-release identifier (without leading +-+)
+      # @param build_metadata [String, nil] build metadata (without leading +++)
       def initialize(major, minor, patch, pre_release: nil, build_metadata: nil)
         @major = major.to_i
         @minor = minor.to_i
@@ -16,6 +38,14 @@ module Philiprehberger
         freeze
       end
 
+      # Compare two versions per SemVer 2.0.0 precedence rules.
+      #
+      # Build metadata is ignored. Pre-release versions sort lower than their
+      # release counterpart; pre-release identifiers are compared token-by-token
+      # (numerics numerically, alphas lexicographically).
+      #
+      # @param other [Version] the other version to compare against
+      # @return [Integer, nil] -1, 0, 1, or +nil+ if +other+ is not a {Version}
       def <=>(other)
         return nil unless other.is_a?(Version)
 
@@ -25,6 +55,14 @@ module Philiprehberger
         compare_pre_release(pre_release, other.pre_release)
       end
 
+      # Return a new {Version} with the given level bumped.
+      #
+      # Lower segments are reset to zero, and any pre-release / build metadata
+      # is dropped.
+      #
+      # @param level [Symbol] one of +:major+, +:minor+, or +:patch+
+      # @return [Version] a new bumped version
+      # @raise [Error] if +level+ is not a recognized symbol
       def bump(level)
         case level
         when :major then self.class.new(major + 1, 0, 0)
@@ -64,18 +102,35 @@ module Philiprehberger
         self.class.new(major, minor, patch, pre_release: new_pre_release, build_metadata: build_metadata)
       end
 
+      # Return the dot-separated pre-release identifiers as an array.
+      #
+      # Numeric identifiers remain strings (SemVer-compliant identifiers are
+      # strings even when numeric). Returns an empty array when the version
+      # has no pre-release segment.
+      #
+      # @return [Array<String>] the pre-release identifiers, or +[]+ if none
+      def prerelease_identifiers
+        return [] if @pre_release.nil?
+
+        @pre_release.split('.')
+      end
+
+      # @return [Boolean] +true+ if the version has a pre-release segment
       def pre_release?
         !@pre_release.nil?
       end
 
+      # @return [Boolean] +true+ if major >= 1 and there is no pre-release
       def stable?
         @pre_release.nil? && @major >= 1
       end
 
+      # @return [Array<Integer>] +[major, minor, patch]+
       def to_a
         [@major, @minor, @patch]
       end
 
+      # @return [String] the canonical SemVer string
       def to_s
         str = "#{major}.#{minor}.#{patch}"
         str = "#{str}-#{pre_release}" if pre_release

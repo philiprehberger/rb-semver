@@ -296,4 +296,80 @@ RSpec.describe Philiprehberger::Semver do
       expect(described_class.sort(input)).to eq(expected)
     end
   end
+
+  describe '#prerelease_identifiers' do
+    it 'returns dot-separated identifiers as an array of strings' do
+      v = described_class.parse('1.2.3-beta.1')
+      expect(v.prerelease_identifiers).to eq(%w[beta 1])
+    end
+
+    it 'returns an empty array when the version has no pre-release' do
+      v = described_class.parse('1.2.3')
+      expect(v.prerelease_identifiers).to eq([])
+    end
+
+    it 'keeps numeric identifiers as strings' do
+      v = described_class.parse('1.0.0-0.3.7')
+      expect(v.prerelease_identifiers).to eq(%w[0 3 7])
+      expect(v.prerelease_identifiers).to all(be_a(String))
+    end
+
+    it 'handles a single identifier' do
+      v = described_class.parse('1.0.0-alpha')
+      expect(v.prerelease_identifiers).to eq(['alpha'])
+    end
+
+    it 'ignores build metadata' do
+      v = described_class.parse('1.0.0-rc.1+build.42')
+      expect(v.prerelease_identifiers).to eq(%w[rc 1])
+    end
+
+    it 'returns an empty array when only build metadata is present' do
+      v = described_class.parse('1.0.0+build.42')
+      expect(v.prerelease_identifiers).to eq([])
+    end
+  end
+
+  describe 'parser identifier validation' do
+    it 'accepts valid alphanumeric pre-release identifiers' do
+      expect { described_class.parse('1.0.0-alpha-1.beta2') }.not_to raise_error
+    end
+
+    it 'accepts hyphens inside pre-release identifiers' do
+      expect { described_class.parse('1.0.0-x-y-z') }.not_to raise_error
+    end
+
+    it 'accepts valid build-metadata identifiers' do
+      expect { described_class.parse('1.0.0+build-42.sha-abc') }.not_to raise_error
+    end
+
+    it 'rejects an underscore in pre-release (caught by regex)' do
+      expect { described_class.parse('1.0.0-alpha_1') }.to raise_error(Philiprehberger::Semver::Error)
+    end
+
+    it 'rejects a space in build metadata' do
+      expect { described_class.parse('1.0.0+build 42') }.to raise_error(Philiprehberger::Semver::Error)
+    end
+  end
+
+  describe '.satisfies? invalid constraints' do
+    it 'raises on an unrecognized operator-looking prefix' do
+      expect { described_class.satisfies?('1.0.0', '~1.0.0') }
+        .to raise_error(Philiprehberger::Semver::Error, /Invalid version constraint/)
+    end
+
+    it 'raises on a not-equal operator' do
+      expect { described_class.satisfies?('1.0.0', '!= 1.0.0') }
+        .to raise_error(Philiprehberger::Semver::Error, /Invalid version constraint/)
+    end
+
+    it 'still accepts a plain version as exact match' do
+      expect(described_class.satisfies?('1.2.3', '1.2.3')).to be true
+    end
+
+    it 'raises on an empty constraint part' do
+      expect { described_class.satisfies?('1.0.0', '') }
+        .to raise_error(Philiprehberger::Semver::Error)
+    end
+  end
 end

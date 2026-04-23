@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-23
+
+### Added
+- `Version#prerelease_identifiers` returns the dot-separated pre-release identifiers as an array.
+- YARD documentation on all public API methods.
+
+### Changed
+- Parser now validates pre-release and build-metadata identifiers per SemVer 2.0.0 (rejects non-`[0-9A-Za-z-]` characters).
+- `Range` now raises `Philiprehberger::Semver::Error` on invalid constraint strings instead of silently treating them as exact-match.
+
 ## [0.3.0] - 2026-04-17
 
 ### Added
