@@ -115,6 +115,14 @@ module Philiprehberger
         @pre_release.split('.')
       end
 
+      # Return a new {Version} with the pre-release identifier stripped.
+      # Build metadata is preserved.
+      #
+      # @return [Version] a new instance with no pre-release
+      def strip_prerelease
+        self.class.new(major, minor, patch, pre_release: nil, build_metadata: build_metadata)
+      end
+
       # @return [Boolean] +true+ if the version has a pre-release segment
       def pre_release?
         !@pre_release.nil?

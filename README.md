@@ -86,6 +86,17 @@ Philiprehberger::Semver.parse('1.0.0-rc').next_pre_release.to_s            # => 
 Philiprehberger::Semver.parse('1.0.0-alpha.beta').next_pre_release.to_s    # => '1.0.0-alpha.beta.1'
 ```
 
+### Stripping pre-release
+
+`strip_prerelease` returns a new immutable `Version` with the pre-release identifier removed. Build metadata is preserved.
+
+```ruby
+v = Philiprehberger::Semver.parse('1.2.3-rc.1')
+v.strip_prerelease.to_s # => "1.2.3"
+
+Philiprehberger::Semver.parse('1.2.3-rc.1+build.5').strip_prerelease.to_s # => "1.2.3+build.5"
+```
+
 ### Pre-release identifiers
 
 `prerelease_identifiers` returns the dot-separated pre-release identifiers as an array of strings. Numeric identifiers stay as strings (per SemVer 2.0.0). Versions without a pre-release segment return an empty array.
@@ -143,6 +154,7 @@ Philiprehberger::Semver.satisfies?('2.0.0', '>= 1.0.0, < 2.0.0')  # => false
 | `#build_metadata` | Build metadata or `nil` |
 | `#bump(level)` | Return a new `Version` bumped at `:major`, `:minor`, or `:patch` |
 | `#next_pre_release(label:)` | Return a new `Version` with its pre-release iterated (promotes stable, or bumps trailing numeric token) |
+| `#strip_prerelease` | Returns a new `Version` with the pre-release stripped (preserves build metadata) |
 | `#pre_release?` | `true` if the version has a pre-release segment |
 | `#stable?` | `true` if major >= 1 and no pre-release |
 | `#to_a` | Return `[major, minor, patch]` as an array |

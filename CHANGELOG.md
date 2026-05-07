@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-05-07
+
+### Added
+- `Version#strip_prerelease` — returns a new `Version` with the pre-release identifier removed and build metadata preserved.
+
 ## [0.4.0] - 2026-04-23
 
 ### Added
